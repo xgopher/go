@@ -1,0 +1,47 @@
+package middlewares
+
+import (
+	"net/http"
+
+	"app/services/xxx"
+	"github.com/astaxie/beego/context"
+	"github.com/casbin/casbin"
+)
+
+
+func AuthMiddleware(ctx *context.Context) {
+	/* 角色获取 */
+	sess := ctx.Input.CruSession
+	role := sess.Get("roles")
+	if role == "" || role == nil {
+		// 游客角色
+		role = "anonymous"
+	}
+
+	/* 权限检查 */
+	e, err := casbin.NewEnforcerSafe("conf/rbac.conf", adapter)
+	if err != nil {
+		// http.StatusInternalServerError 500 内部错误
+		abort(500, "ERROR\n", ctx.ResponseWriter)
+	}
+	res, err := e.EnforceSafe(role, ctx.Input.URL(), ctx.Input.Method())
+	if err != nil {
+		// 500 内部错误 http.StatusInternalServerError
+		abort(500, "ERROR\n", ctx.ResponseWriter)
+	}
+
+	// 权限检查 - 通过
+	if res {
+		// NEXT HTTP 继续往下走
+		return
+	}
+
+	// 403 禁止访问
+	abort(403, "403 Forbidden\n", ctx.ResponseWriter)
+}
+
+// 中止函数，跟 beego controller 里面 Abort 有所区别
+func abort(status int, body string, w http.ResponseWriter) {
+	w.WriteHeader(status)
+	w.Write([]byte(body))
+}

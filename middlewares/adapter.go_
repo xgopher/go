@@ -1,0 +1,217 @@
+// GORM 权限管理适配器(改造升级版)
+//
+// 基于：github.com/casbin/gorm-adapter
+// Adapter 实现接口 github.com/casbin/casbin/persist/adapter.go
+
+package services
+
+import (
+	"gitee.com/quantcloud/guitai/modules/admin/models"
+	"github.com/casbin/casbin/model"
+	"github.com/casbin/casbin/persist"
+	"github.com/jinzhu/gorm"
+)
+
+// Adapter represents the Gorm adapter for policy storage.
+type Adapter struct {
+	db *gorm.DB
+}
+
+// NewAdapter is the constructor for Adapter.
+func NewAdapter(db *gorm.DB) *Adapter {
+	a := &Adapter{}
+	a.db = db
+	return a
+}
+
+func (a *Adapter) createTable() {
+	if a.db.HasTable(&models.CasbinRule{}) {
+		return
+	}
+
+	err := a.db.CreateTable(&models.CasbinRule{}).Error
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (a *Adapter) dropTable() {
+	err := a.db.DropTable(&models.CasbinRule{}).Error
+	if err != nil {
+		panic(err)
+	}
+}
+
+func loadPolicyLine(line models.CasbinRule, model model.Model) {
+	lineText := line.PType
+	if line.V0 != "" {
+		lineText += ", " + line.V0
+	}
+	if line.V1 != "" {
+		lineText += ", " + line.V1
+	}
+	if line.V2 != "" {
+		lineText += ", " + line.V2
+	}
+	if line.V3 != "" {
+		lineText += ", " + line.V3
+	}
+	if line.V4 != "" {
+		lineText += ", " + line.V4
+	}
+	if line.V5 != "" {
+		lineText += ", " + line.V5
+	}
+
+	persist.LoadPolicyLine(lineText, model)
+}
+
+// LoadPolicy loads policy from database.
+func (a *Adapter) LoadPolicy(model model.Model) error {
+	var lines []models.CasbinRule
+	err := a.db.Find(&lines).Error
+	if err != nil {
+		return err
+	}
+
+	for _, line := range lines {
+		loadPolicyLine(line, model)
+	}
+
+	return nil
+}
+
+func savePolicyLine(ptype string, rule []string) models.CasbinRule {
+	line := models.CasbinRule{}
+
+	line.PType = ptype
+	if len(rule) > 0 {
+		line.V0 = rule[0]
+	}
+	if len(rule) > 1 {
+		line.V1 = rule[1]
+	}
+	if len(rule) > 2 {
+		line.V2 = rule[2]
+	}
+	if len(rule) > 3 {
+		line.V3 = rule[3]
+	}
+	if len(rule) > 4 {
+		line.V4 = rule[4]
+	}
+	if len(rule) > 5 {
+		line.V5 = rule[5]
+	}
+
+	return line
+}
+
+// SavePolicy saves policy to database.
+func (a *Adapter) SavePolicy(model model.Model) error {
+	a.dropTable()
+	a.createTable()
+
+	for ptype, ast := range model["p"] {
+		for _, rule := range ast.Policy {
+			line := savePolicyLine(ptype, rule)
+			err := a.db.Create(&line).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	for ptype, ast := range model["g"] {
+		for _, rule := range ast.Policy {
+			line := savePolicyLine(ptype, rule)
+			err := a.db.Create(&line).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+// AddPolicy adds a policy rule to the storage.
+func (a *Adapter) AddPolicy(sec string, ptype string, rule []string) error {
+	line := savePolicyLine(ptype, rule)
+	err := a.db.Create(&line).Error
+	return err
+}
+
+// RemovePolicy removes a policy rule from the storage.
+func (a *Adapter) RemovePolicy(sec string, ptype string, rule []string) error {
+	line := savePolicyLine(ptype, rule)
+	err := rawDelete(a.db, line) //can't use db.Delete as we're not using primary key http://jinzhu.me/gorm/crud.html#delete
+	return err
+}
+
+// RemoveFilteredPolicy removes policy rules that match the filter from the storage.
+func (a *Adapter) RemoveFilteredPolicy(sec string, ptype string, fieldIndex int, fieldValues ...string) error {
+	line := models.CasbinRule{}
+
+	line.PType = ptype
+	if fieldIndex <= 0 && 0 < fieldIndex+len(fieldValues) {
+		line.V0 = fieldValues[0-fieldIndex]
+	}
+	if fieldIndex <= 1 && 1 < fieldIndex+len(fieldValues) {
+		line.V1 = fieldValues[1-fieldIndex]
+	}
+	if fieldIndex <= 2 && 2 < fieldIndex+len(fieldValues) {
+		line.V2 = fieldValues[2-fieldIndex]
+	}
+	if fieldIndex <= 3 && 3 < fieldIndex+len(fieldValues) {
+		line.V3 = fieldValues[3-fieldIndex]
+	}
+	if fieldIndex <= 4 && 4 < fieldIndex+len(fieldValues) {
+		line.V4 = fieldValues[4-fieldIndex]
+	}
+	if fieldIndex <= 5 && 5 < fieldIndex+len(fieldValues) {
+		line.V5 = fieldValues[5-fieldIndex]
+	}
+	err := rawDeleteAll(a.db, line)
+	return err
+}
+
+func rawDelete(db *gorm.DB, line models.CasbinRule) error {
+	err := db.Delete(models.CasbinRule{}, "p_type = ? and v0 = ?"+
+		" and v1 = ? and v2 = ? and v3 = ? and v4 = ? and v5 = ?",
+		line.PType, line.V0, line.V1, line.V2, line.V3, line.V4, line.V5).Error
+	return err
+}
+
+func rawDeleteAll(db *gorm.DB, line models.CasbinRule) error {
+	queryArgs := []interface{}{line.PType}
+
+	queryStr := "p_type = ?"
+	if line.V0 != "" {
+		queryStr += " and v0 = ?"
+		queryArgs = append(queryArgs, line.V0)
+	}
+	if line.V1 != "" {
+		queryStr += " and v1 = ?"
+		queryArgs = append(queryArgs, line.V1)
+	}
+	if line.V2 != "" {
+		queryStr += " and v2 = ?"
+		queryArgs = append(queryArgs, line.V2)
+	}
+	if line.V3 != "" {
+		queryStr += " and v3 = ?"
+		queryArgs = append(queryArgs, line.V3)
+	}
+	if line.V4 != "" {
+		queryStr += " and v4 = ?"
+		queryArgs = append(queryArgs, line.V4)
+	}
+	if line.V5 != "" {
+		queryStr += " and v5 = ?"
+		queryArgs = append(queryArgs, line.V5)
+	}
+	args := append([]interface{}{queryStr}, queryArgs...)
+	err := db.Delete(models.CasbinRule{}, args...).Error
+	return err
+}
