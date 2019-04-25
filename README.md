@@ -23,6 +23,8 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
 ## 技术选型
 
 - Kafka # 高吞吐量的分布式发布订阅消息系统
+- GORM # ORM库 [[项目地址]](https://github.com/jinzhu/gorm) [[官方文档]](http://gorm.io/) [[中文文档]](http://gorm.book.jasperxu.com/)
+- Cobra # Cobra 是个非常不错的命令行包，docker，hugo都在使用 [[项目地址]](https://github.com/spf13/cobra)
 
 ## 软件需求
 
