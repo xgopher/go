@@ -12,11 +12,14 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
     ├── conf
     ├── controllers
     ├── docs
+    |—— modules
     ├── go.mod
     ├── go.sum
     ├── main.go
     ├── models
     ├── routers
+    ├── .env // 配置文件，自己生成
+    ├── .env.example // 配置文件，模板，仅提供结构和示范
     └── tests
 ```
 
@@ -34,9 +37,17 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
 
 - GOPROXY - A global proxy for go modules [[官网及文档]](https://goproxy.io/) ，[[备用地址]](https://goproxy.cn/)
 
-  - windows 用户开启powerShell必须使用管理员权限
-  - windows 用户 在我的电脑 >> 右键 >> 属性 >> 高级系统设置 >> 环境变量 >> 系统变量 中新增一项，名字为GOPROXY 值为： https://goproxy.io
-  - 如果遇到 https://goproxy.io 不能使用的情况，请使用https://goproxy.cn 代替
+  - mac 或 linux用户执行：`export GOPROXY=https://goproxy.io`
+  - windows用户操作流程
+    - **方法1** windows 用户开启powerShell必须使用管理员权限
+    - **方法2** windows 用户进入 我的电脑 >> 右键 >> 属性 >> 高级系统设置 >> 环境变量 >> 系统变量 中新增一项，名字为GOPROXY 值为： https://goproxy.io
+  - 如果遇到 https://goproxy.io 不能使用的情况，请使用 https://goproxy.cn 代替
+
+## 软件本地化配置
+
+```
+cp .env.example .env
+```
 
 ## 本地部署
 
@@ -45,6 +56,7 @@ go mod tidy
 ```
 
 执行后，会下载相关包到 `$GOPATH/pkg/mod` 目录下
+
 
 **命令说明**
 
