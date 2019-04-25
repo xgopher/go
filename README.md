@@ -26,6 +26,8 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
 ## 技术选型
 
 - Kafka - 高吞吐量的分布式发布订阅消息系统
+    - [Shopify/sarama [推荐]](https://github.com/Shopify/sarama) - 纯 go 写的
+    - [confluentinc/confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) - 有 C 库，环境成本稍微高点
 - [GORM - ORM库](https://github.com/jinzhu/gorm) [[官方文档]](http://gorm.io/) [[中文文档]](http://gorm.book.jasperxu.com/)
 - [Cobra 命令行包](https://github.com/spf13/cobra)
 - [Casbin 权限管理](https://github.com/casbin/casbin)
