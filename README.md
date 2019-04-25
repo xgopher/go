@@ -51,12 +51,20 @@ cp .env.example .env
 
 ## 本地部署
 
+运行
 ```
-go mod tidy
+go build ./...
 ```
 
-执行后，会下载相关包到 `$GOPATH/pkg/mod` 目录下
+测试
 
+```
+go test ./...
+```
+
+**参数**
+
+- `./...` : 配合当前模块所有相关包
 
 **命令说明**
 
@@ -76,6 +84,14 @@ go list -m  主模块的打印路径
 go list -m -f={{.Dir}}  print主模块的根目录
 go list -m all  查看当前的依赖和版本信息
 ```
+> **NOTE**  
+> `go mod tidy` 执行后，会下载相关包到 `$GOPATH/pkg/mod` 目录下
+
+## 版本发布
+
+> **参考**  
+> @https://github.com/golang/go/wiki/Modules#how-to-prepare-for-a-release
+
 ## 如何交流、反馈、参与贡献？
 
 xxx
