@@ -9,7 +9,7 @@ package routers
 
 import (
 	"app/controllers"
-
+	_ "app/modules/helloworld" // 开启 helloworld 模块
 	"github.com/astaxie/beego"
 )
 
@@ -25,7 +25,6 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
-		
 	)
 	beego.AddNamespace(ns)
 }
