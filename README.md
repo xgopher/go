@@ -33,6 +33,8 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
 
 - go 1.12
 
+> [如何升级 golang 版本](docs/update-golang.md)
+
 ## 代理设置
 
 - GOPROXY - A global proxy for go modules [[官网及文档]](https://goproxy.io/) ，[[备用地址]](https://goproxy.cn/)
