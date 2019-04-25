@@ -9,8 +9,11 @@ package routers
 
 import (
 	"app/controllers"
+
 	_ "app/modules/helloworld" // 开启 helloworld 模块
+
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
 )
 
 func init() {
@@ -25,6 +28,10 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
+		beego.NSGet("/dd", func(ctx *context.Context) {
+			t := beego.AppConfig.String("sqlconn")
+			ctx.Output.Body([]byte(t))
+		}),
 	)
 	beego.AddNamespace(ns)
 }
