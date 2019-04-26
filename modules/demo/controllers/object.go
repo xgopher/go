@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"app/modules/helloworld/models"
+	"app/modules/demo/models"
 	"encoding/json"
 	"github.com/astaxie/beego"
 )

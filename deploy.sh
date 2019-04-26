@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Step 1. 检查 
+export GOPROXY=https://goproxy.io
+
+# Step 1. 检查
 #   - 删除错误或者不使用的modules
 go mod tidy
 
@@ -11,7 +13,6 @@ go test all
 # Setp3. 确保 go.sum + go.mod 一起提交到版本库
 
 # ... 待补充
-
 
 # Step 4. 更新到服务器
 

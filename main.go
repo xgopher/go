@@ -1,8 +1,7 @@
 package main
 
 import (
-	_ "app/conf"
-	_ "app/routers"
+	_ "app/core" // 导入核心库
 
 	// "app/middlewares/auth"
 	"github.com/astaxie/beego"
@@ -26,5 +25,6 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+
 	beego.Run()
 }
