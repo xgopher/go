@@ -10,7 +10,7 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
     ├── LICENSE
     ├── README.md
     ├── conf
-    ├── controllers
+    ├── controllers  
     ├── docs
     |—— modules
     ├── go.mod
@@ -20,7 +20,10 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
     ├── routers
     ├── .env // 配置文件，自己生成
     ├── .env.example // 配置文件，模板，仅提供结构和示范
-    └── tests
+    ├── build-run.sh  // 脚本文件: 构建 && 运行
+    ├── test.sh       // 脚本文件: 测试
+    ├── deploy.sh     // 脚本文件: 部署发布
+    └── tests            
 ```
 
 ## 技术选型
