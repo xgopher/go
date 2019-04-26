@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "app/core" // 导入核心库
+	_ "app/routers" // 加载路由表 (路由表经常会更新，独立出来好处: 可单独编译/更新此包 routes.a 就可以)
 
 	// "app/middlewares/auth"
 	"github.com/astaxie/beego"

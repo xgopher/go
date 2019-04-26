@@ -1,8 +1,7 @@
 package core
 
 import (
-	_ "app/conf"    // 配置
-	_ "app/routers" // 路由
+	_ "app/conf" // 配置
 	"os"
 
 	_ "github.com/go-sql-driver/mysql" // 导入驱动程序

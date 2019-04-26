@@ -10,13 +10,12 @@ go 是一个基于 `beego` 框架轻量级快速开发平台
     ├── LICENSE
     ├── README.md
     ├── conf
-    ├── controllers  
+    ├── core    // 核心库 (尽量少改动，会影响全局)
     ├── docs
     |—— modules
     ├── go.mod
     ├── go.sum
     ├── main.go
-    ├── models
     ├── routers
     ├── .env // 配置文件，自己生成
     ├── .env.example // 配置文件，模板，仅提供结构和示范
