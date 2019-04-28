@@ -2,7 +2,7 @@
 package routers
 
 import (
-	_ "app/modules/demo" // 开启 demo 模块
+	_ "app/modules/hello" // 开启 hello 模块
 )
 
 func init() {

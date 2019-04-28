@@ -21,8 +21,8 @@
 
 |方法        |路径                       |动作     |
 |----        |----                      |----     |
-|GET         | /demo/objects          | index   |
-|POST        | /demo/objects          | store   |
-|GET         | /demo/objects/{object} | show    |
-|PUT/PATCH   | /demo/objects/{object} | update  |
-|DELETE      | /demo/objects/{object} | destroy |
+|GET         | /hello/objects          | index   |
+|POST        | /hello/objects          | store   |
+|GET         | /hello/objects/{object} | show    |
+|PUT/PATCH   | /hello/objects/{object} | update  |
+|DELETE      | /hello/objects/{object} | destroy |
