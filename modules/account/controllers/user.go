@@ -49,7 +49,12 @@ func (c *UserController) Store() {
 		return
 	}
 
-	c.Data["json"] = user
+	// 暂时返回匿名结构体
+	c.Data["json"] = struct {
+		ID string
+	}{
+		user.ID,
+	}
 	c.ServeJSON()
 }
 
